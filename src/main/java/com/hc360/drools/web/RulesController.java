@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Drools的基本用法，动态规则+决策表
+ * Drools商机算分服务
  */
 @RequestMapping(value = "/rules")
 @RestController
