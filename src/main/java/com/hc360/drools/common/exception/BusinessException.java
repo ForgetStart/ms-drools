@@ -7,7 +7,6 @@ import com.hc360.drools.common.bean.ExceptionType;
 /**
  * 业务异常
  *
- * @author xuhua
  * @since 1.0.0
  */
 public class BusinessException extends RuntimeException {

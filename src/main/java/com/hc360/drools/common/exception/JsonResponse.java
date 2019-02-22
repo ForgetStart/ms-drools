@@ -5,7 +5,6 @@ package com.hc360.drools.common.exception;
 /**
  * 业务异常类json
  *
- * @author xuhua
  * @since 1.0.0
  */
 public class JsonResponse {
