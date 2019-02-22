@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Drools商机算分服务
  */
-@RequestMapping(value = "/rules")
+@RequestMapping(value = "/v1/rules")
 @RestController
 public class RulesController {
 
