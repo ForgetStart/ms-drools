@@ -76,11 +76,11 @@ end
 
 /*
     标题算分
-    标题中是否包含关键词(0 包含 1 不包含)   包含--100分 不包含--50分
+    标题中是否包含关键词(0 不包含 1 包含)   包含--100分 不包含--50分
 */
 rule "titleI"
 when
-    $b : BusinChance(hasOtherTitleDetail == 0);
+    $b : BusinChance(hasOtherTitleDetail == 1);
 then
     $b.setScore($b.getScore() + 100);
     $b.setHaslongtitle(100);
@@ -88,7 +88,7 @@ end
 
 rule "titleII"
 when
-    $b : BusinChance(hasOtherTitleDetail == 1);
+    $b : BusinChance(hasOtherTitleDetail == 0);
 then
     $b.setScore($b.getScore() + 50);
     $b.setHaslongtitle(50);

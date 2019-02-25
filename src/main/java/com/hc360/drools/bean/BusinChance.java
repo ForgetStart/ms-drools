@@ -18,7 +18,7 @@ public class BusinChance implements Serializable {
 
     private String params;                  //商品参数
 
-    private int hasOtherTitleDetail;    //标题是否包含关键词 (0 包含 1 不包含)
+    private int hasOtherTitleDetail;    //标题是否包含关键词 (0 不包含 1 包含)
 
     private String isSupportTrade;          //是否支持在线交易（0 否 1 是）
 
