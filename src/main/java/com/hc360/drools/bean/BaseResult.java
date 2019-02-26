@@ -1,77 +1,38 @@
 package com.hc360.drools.bean;
 
-public class BaseResult {
+import java.io.Serializable;
 
-	private static BaseResult singleton = new BaseResult();
+public class BaseResult<T> implements Serializable{
+	
+	//返回接口状态码
+	private long errcode;
+	//返回消息
+	private String errmsg;
+	//返回数据
+	private T data;
 
-	private long code;
-	private String msg;
-	private Object data;
 
-	public long getCode() {
-		return code;
+	public long getErrcode() {
+		return errcode;
 	}
 
-	public void setCode(long code) {
-		this.code = code;
+	public void setErrcode(long errcode) {
+		this.errcode = errcode;
 	}
 
-	public String getMsg() {
-		return msg;
+	public String getErrmsg() {
+		return errmsg;
 	}
 
-	public void setMsg(String msg) {
-		this.msg = msg;
+	public void setErrmsg(String errmsg) {
+		this.errmsg = errmsg;
 	}
 
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
-
-	private BaseResult(){}
-
-	public static BaseResult getInstance(){
-		return singleton;
-	}
-
-	public static BaseResult isSuccess(Object data){
-		BaseResult baseResult = getInstance();
-		baseResult.setCode(100);
-		baseResult.setMsg("成功");
-
-		baseResult.setData(data);
-		return  baseResult;
-	}
-
-	public static BaseResult isSuccess(Object data, String msg){
-		BaseResult baseResult = getInstance();
-		baseResult.setCode(100);
-		baseResult.setMsg(msg);
-
-		baseResult.setData(data);
-		return  baseResult;
-	}
-
-	public static BaseResult isFail(String msg){
-		BaseResult baseResult = getInstance();
-
-		baseResult.setCode(200);
-		baseResult.setMsg(msg);
-		return baseResult;
-	}
-
-
-	public static BaseResult illegalParam(String msg){
-		BaseResult baseResult = getInstance();
-
-		baseResult.setCode(300);
-		baseResult.setMsg(msg);
-
-		return baseResult;
-	}
-
 }

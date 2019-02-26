@@ -2,7 +2,10 @@ package com.hc360.drools.web;
 
 import com.hc360.drools.bean.BaseResult;
 import com.hc360.drools.bean.BusinChance;
+import com.hc360.drools.bean.ReturnCode;
 import com.hc360.drools.service.RulesService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,17 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RulesController {
 
+    private static final Log log =  LogFactory.getLog("RulesController");
     @Autowired
     private RulesService rulesService;
 
     @RequestMapping(value = "/score", method = RequestMethod.POST)
-    public BaseResult score(@RequestBody BusinChance businChance){
-
-        businChance = rulesService.getBusinScore(businChance, "businChanceScore");
-
-        businChance = rulesService.getBusinScore(businChance, "getBusinStar");
-
-        return BaseResult.isSuccess(businChance);
+    public BaseResult<BusinChance> score(@RequestBody BusinChance businChance){
+        BaseResult<BusinChance> result = new BaseResult<>();
+        BusinChance scoreResult = new BusinChance();
+        try {
+            scoreResult = rulesService.getBusinScore(businChance, "businChanceScore");
+            scoreResult = rulesService.getBusinScore(scoreResult, "getBusinStar");
+            result.setData(scoreResult);
+            result.setErrcode(ReturnCode.OK.getErrcode());
+        }catch (Exception e){
+            log.error("查询商机分数异常",e);
+            result.setErrcode(ReturnCode.ERROR_Exception.getErrcode());
+            result.setErrmsg(ReturnCode.ERROR_Exception.getErrmsg());
+        }
+        return result;
     }
 }
 
