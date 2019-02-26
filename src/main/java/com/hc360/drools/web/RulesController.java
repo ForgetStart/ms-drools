@@ -1,5 +1,6 @@
 package com.hc360.drools.web;
 
+import com.hc360.drools.bean.BaseResult;
 import com.hc360.drools.bean.BusinChance;
 import com.hc360.drools.service.RulesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,13 @@ public class RulesController {
     private RulesService rulesService;
 
     @RequestMapping(value = "/score", method = RequestMethod.POST)
-    public BusinChance score(@RequestBody BusinChance businChance){
+    public BaseResult score(@RequestBody BusinChance businChance){
 
         businChance = rulesService.getBusinScore(businChance, "businChanceScore");
 
         businChance = rulesService.getBusinScore(businChance, "getBusinStar");
 
-        return businChance;
+        return BaseResult.isSuccess(businChance);
     }
 }
 
