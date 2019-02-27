@@ -3,11 +3,11 @@ import com.hc360.drools.bean.BusinChance;
 
 /*
     类目算分
-    是否有类目(0 有 1 没有)  有-- 100分     无-- 0分
+    是否有类目(1 有 0 没有)  有-- 100分     无-- 0分
 */
 rule "category"
  when
-    $b : BusinChance(hasSupCat == 0)
+    $b : BusinChance(hasSupCat == 1)
  then
     $b.setScore($b.getScore() + 100);
     $b.setHasSupCatScore(100);
