@@ -86,9 +86,8 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>
+            <artifactId>spring-cloud-starter-hystrix</artifactId>
         </dependency>
-
         <!--SpringBoot core-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
