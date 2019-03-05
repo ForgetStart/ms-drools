@@ -25,13 +25,16 @@ public class RulesController {
 
     @RequestMapping(value = "/score", method = RequestMethod.POST)
     public BaseResult<BusinChance> score(@RequestBody BusinChance businChance){
+        log.info(" *****jie shou request*********");
         BaseResult<BusinChance> result = new BaseResult<>();
         BusinChance scoreResult = new BusinChance();
         try {
+            log.info("&&&&&&&&&&& star score service &&&&&&&&");
             scoreResult = rulesService.getBusinScore(businChance, "businChanceScore");
             scoreResult = rulesService.getBusinScore(scoreResult, "getBusinStar");
             result.setData(scoreResult);
             result.setErrcode(ReturnCode.OK.getErrcode());
+            log.info("score service end ");
         }catch (Exception e){
             log.error("查询商机分数异常",e);
             result.setErrcode(ReturnCode.ERROR_Exception.getErrcode());
