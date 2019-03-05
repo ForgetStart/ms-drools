@@ -29,12 +29,13 @@ public class RulesController {
         BaseResult<BusinChance> result = new BaseResult<>();
         BusinChance scoreResult = new BusinChance();
         try {
+            long star = System.currentTimeMillis();
             log.info("&&&&&&&&&&& star score service &&&&&&&&");
             scoreResult = rulesService.getBusinScore(businChance, "businChanceScore");
             scoreResult = rulesService.getBusinScore(scoreResult, "getBusinStar");
             result.setData(scoreResult);
             result.setErrcode(ReturnCode.OK.getErrcode());
-            log.info("score service end ");
+            log.info("score service end  time " + (System.currentTimeMillis() - star) + "");
         }catch (Exception e){
             log.error("查询商机分数异常",e);
             result.setErrcode(ReturnCode.ERROR_Exception.getErrcode());
