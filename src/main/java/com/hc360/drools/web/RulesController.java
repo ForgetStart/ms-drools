@@ -26,11 +26,9 @@ public class RulesController {
     @RequestMapping(value = "/score", method = RequestMethod.POST)
     public BaseResult<BusinChance> score(@RequestBody BusinChance businChance){
         long star = System.currentTimeMillis();
-        log.info(" *****jie shou request****** receive time***"  + star);
         BaseResult<BusinChance> result = new BaseResult<>();
         BusinChance scoreResult = new BusinChance();
         try {
-            log.info("&&&&&&&&&&& star score service &&&&&&&&");
             scoreResult = rulesService.getBusinScore(businChance, "businChanceScore");
             scoreResult = rulesService.getBusinScore(scoreResult, "getBusinStar");
             result.setData(scoreResult);
