@@ -1,0 +1,175 @@
+forward chain   CLIPS  RETE
+
+
+
+什么是规则引擎？
+	规则引擎由推理引擎发展而来，是一种嵌入在应用程序中的组件，实现了将业务决策从应用程序代码中分离出来，并使用预定义的语义模块编写业务决策。
+		接受数据输入，解释业务规则，并根据业务规则做出业务决策。
+
+Drools是什么？
+	Drools是为Java量身定制的基于Charles Forgy的RETE算法的规则引擎的实现。具有了OO接口的RETE,使得商业规则有了更自然的表达。
+	Drools 具有一个易于访问企业策略、易于调整以及易于管理的开源业务 规则引擎，符合业内标准，速度快、效率高。业务分析师或审核人员可以利用它轻松查看业务规则，
+	从而检验已编码的规则是否执行了所需的业务规则。其前身是 Codehaus 的一个开源项目叫 Drools，最近被纳入 JBoss 门下，更名为 JBoss Rules，成为了 JBoss 应用服务器的规则引擎。
+	目前，Drools 支持四种规则描述文件，分别是：drl 文件、 xls 文件、brl 文件和 dsl 文件，其中，常用的描述文件是 drl 文件和 xls 文件，而 xls 文件更易于维护，
+	更直观，更为被业务人员所理解。
+	
+Drools规则引擎原理
+	Drools 中的 Rete 算法被称为 ReteOO，表示 Drools 为面向对象系统（Object Oriented systems）增强并优化了 Rete 算法。
+	在 Drools 中，规则被存放在 Production Memory（规则库）中，推理机要匹配的 facts（事实）被存在 Working Memory（工作内存）中。
+	当时事实被插入到工作内存中后，规则引擎会把事实和规则库里的模式进行匹配，
+	对于匹配成功的规则再由 Agenda 负责具体执行推理算法中被激发规则的结论部分，同时 Agenda 通过冲突决策策略管理这些冲突规则的执行顺序
+	
+	
+	
+	应用场景：数据校验，运算，数据过滤，消息路由，任何能被描述成函数或公式的规则
+	
+	
+	规则引擎的作用和drools如何解决规则冲突
+	
+	规则引擎的作用就是在于根据预先制定的规则去和事实匹配，对符合激发条件的规则，执行规则中定义的推理，作出相应的处理。
+		有时候，规则和规则之间存在冲突，drools使用冲突解决策略来解决矛盾。有两种办法：一个是设置规则的优先级，优先级高的先触发。另一个是
+		在推理部分不推荐使用if then这样的条件判断语句，它应该是明确的行为，因为条件判断应该在LHS中就已经明确区分出来了，
+		如果推论部分存在条件判断的话，应该增加新的规则以满足要求。这样做符合最佳实践。
+		当一个规则被激活，并且推理部分被执行，它可能会对Fact做一些修改或者更新，这样的修改和更新可能会激活更多的其他规则，
+		因此，必须在推论部分 明确指出这个规则对Fact作出的更新和修改，Drools能够及时对Fact进行更新，这样其他规则才能及时应用到最新的Fact数据上来。
+	
+	
+	
+	
+	
+	
+	
+	API可以分为三类：规则编译，规则收集，规则执行
+
+　　1、Kmodule.xml的编译
+　　　　存放在src/main/resources/META-INF/文件夹下
+
+		<?xml version="1.0" encoding="UTF-8"?>
+		<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+			<kbase name="rules" packages="rules.testword">
+				<ksession name="session"/>
+			</kbase>
+		</kmodule>        
+
+　　　　1)、可包含多个kbase，任意但不能重名
+　　　　2)、有个packages，就是src/main/resources下面的文件夹名称，可定义多个包，用逗号隔开
+　　　　3)、ksession都一个name，任意字符串但不能重名，可以有多个
+　　　　4)、在运行时、KieContainer会根据*Model对象来创建KieModule，KieBase，KieSession对象，其中KieModule和KieBase只会创建一次，而KieSession则可能创建多次
+
+　　2、API说明，引入drools依赖jar包，drools-core，kie-api，drools-compiler
+
+
+	KieSession；
+	　　用于与规则引擎进行交互的会话
+	　　分为两类：
+	　　　　有状态KieSession：KieSession会在多次与规则引擎进行交互中，维护会话状态，type属性值是stateful，
+	　　　　　　　　　　　　　最后需要清理KieSession维护的状态，调用dispose()方法
+
+	　　　　无状态StatelessKieSession：StatelessKieSession隔离了每次与规则引擎的交互，不会维护会话状态，无副作用，type属性值是stateless
+	　　　　　　　应用场景：数据校验，运算，数据过滤，消息路由，任何能被描述成函数或公式的规则
+	
+	
+	规则语言
+		
+	　　rule “name”
+	　　　　attributes ---->属性
+	　　　　when
+	　　　　　　LHS ---->条件
+	　　　　then
+	　　　　　　RHS	---->结果
+	　　end
+	
+	　　一个规则包含三部分：唯有attributes部分可选，其他都是必填信息
+	　　　　定义当前规则执行的一些属性等，比如是否可被重复执行，过期时间，生效时间等
+	　　　　LHS：定义当前规则的条件，如 when Message();判断当前workingMemory中是否存在Message对象	
+	　　　　RHS：可以写java代码，即当前规则条件满足执行的操作，可以直接调用Fact对象的方法来操作应用
+
+	　　　　　　LHS：如果LHS部分为空，自动添加一个eval(true)操作
+	　　　　　　　　   LHS部分是由一个或多个条件组成，条件又称为pattern(匹配模式)，多个pattern之间可以使用 and 或 or来进行连接，同时还可以使用小括号来确定pattern的优先级
+	　　　　　　　　 【绑定变量名：】Object(【filed 约束】)
+	　　　　　　　　 对于一个pattern来说"绑定变量名"是可选的，如果在当前规则的LHS部分的其他pattern要使用这个对象，那么可以通过为该对象绑定设定一个
+	　　　　　　　　绑定变量名来实现对其的引用，对于绑定变量的命名，通常的做法是为其添加一个 "$"符号作为前缀，可以和Fact对象区分开来
+	　　　　　　　　绑定变量可以用于对象上，可以用于对象属性上，"field约束"是指当前对象里相关字段的条件限制
+	
+	
+	Drools函数的使用
+	　　insert插入
+	　　语法格式：insert(new Object());
+
+	　　insertLogical插入
+
+	　　update修改
+	　　语法格式：update(Object());
+
+	　　retract删除功能
+
+	drools常用方法
+	　　方法名称　　　　　　　　　　	　　	用法格式	　　　　　　	　　	含义
+	　　getWorkingMemory()	　　drools.getWorkingMemory()	　　	获取当前WorkingMemory对象
+	　　halt()	　　　　　　　      drools.halt()	　　　　　　　　　  在当前规则执行完成之后，不再执行其他未执行的规则
+	　　getRule()	　　　　　      ——	　　　　　　　　　　	　　　获取当前规则对象
+	　　insert(new Object)	　　  ——	　　　　　　　　　　            插入指定对象
+	　　update(new Object)	　  ——                                                 更新指定对象
+	　　update(FactHandleObject) ——	　　　　　　　　　           更新指定对象
+	　　retract(new Object)	　　——	　　　　　　　　　　　　     删除指定对象
+
+	
+	
+	
+	lock-on-active规则执行一次----实例见  "drools-springboot-master"   --   rule2.java/rule2.drl
+	
+　　　　当在规则上使用ruleflow-group属性或agenda-group属性的时候，将lock-on-active属性的值设置为true，可以避免因某些Fact对象被修改而使已经执行过
+　　　　	的规则再次被激活执行。可以看出该属性与no-loop属性有相似之处，
+			no-loop属性是为了避免Fact修改或调用了insert，retract，update 之类导致规则再次激活执行，这里lock-on-active属性也是这个作用，lock-on-active是no-loop的增强版。
+
+　　　　作用：在使用ruleflow-group属性或agenda-group属性的时候，默认是false，设置为true，该规则只会执行一次
+
+
+
+
+	fact对象
+
+		在Drools 当中是通过向WorkingMemory中插入Fact对象的方式来实现规则引擎与业务数据的交互，
+			对于Fact对象就是普通的具有若干个属性及其对应的getter与setter方法的JavaBean对象。Drools除了可以接受用户在外部向WorkingMemory当中插入现成的Fact对象，
+			还允许用户在规则文件当中定义一个新的Fact 对象, 
+			在规则文件当中定义Fact 对象要以declare 关键字开头，以end 关键字结尾，中间部分就是该Fact 对象的属性名及其类型等信息的声明。
+			
+			
+			
+	
+
+	contains、not contains、memberof、not memberof、matches、not matches		
+			条件判断使用的说明    https://www.cnblogs.com/netbuddy/articles/2942361.html
+
+		1) Contains：比较操作符contains 是用来检查一个Fact 对象的某个字段（该字段要是一个Collection或是一个Array 类型的对象）是否包含一个指定的对象
+
+		contains 只能用于对象的某个Collection/Array 类型的字段与另外一个值进行比较，作为比较的值可以是一个静态的值，也可以是一个变量(绑定变量或者是一个global 对象)
+
+		示例：
+
+		package test
+
+		rule "rule1"
+
+		when
+
+		$order:Order();
+
+		$customer:Customer(age >20, orders contains $order);
+
+		then
+
+		System.out.println($customer.getName());
+
+		end
+		
+	Modify：是一个表达式块，它可以快速实现对Fact 对象多个属性进行修改，修改完成后会自动更新到当前的Working Memory 当中	
+	
+	
+	salience
+		salience是优先级的意思，它可以为负数，salience越高，表明规则的优先级越高，越先被激发。默认值是0。
+	
+	
+	
+
+	
